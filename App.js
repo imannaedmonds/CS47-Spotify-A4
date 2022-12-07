@@ -1,9 +1,16 @@
 import { StyleSheet, SafeAreaView, FlatList, Text, Image, TouchableOpacity, ScrollView, View } from "react-native";
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { useSpotifyAuth } from "./utils";
 import { Themes } from "./assets/Themes";
 import { AccessTokenRequest } from "expo-auth-session";
+
 import {Images} from "./assets/Themes/index";
 import SongItem from "./utils/song";
+import DetailedSongScreen from "./utils/DetailedSongScreen";
+import PreviewSongScreen from "./utils/PreviewSongScreen";
 
 const AuthButton = ({ authFunction }) => {
   return (
@@ -30,7 +37,7 @@ const renderSongItem = ({ item, index }) => {
 
 const SongFlatList = ({tracks}) => {
   //render items with album image, song title, song artist, song album, song duration, and song index
- //console.log(tracks)
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -47,8 +54,9 @@ const SongFlatList = ({tracks}) => {
   )
 }
 
+const Stack = createStackNavigator ();
 
-export default function App() {
+function LandingScreen ({navigation}) {
   // Pass in true to useSpotifyAuth to use the album ID (in env.js) instead of top tracks
   // token: Boolean - authenticated or not
   // tracks: [{}] - tracks
@@ -63,7 +71,7 @@ export default function App() {
   let contentDisplayed;
   if (token) {
   // render Flatlist
-    contentDisplayed = <SongFlatList tracks = {tracks}/>;
+    contentDisplayed = <SongFlatList navigation = {navigation} tracks = {tracks}/>;
 
   } else {
   // render AuthButton
@@ -74,6 +82,16 @@ export default function App() {
       {contentDisplayed}
     </SafeAreaView>
   );
+}
+
+export default function App() {
+  <NavigationContainer >
+    <Stack.Navigator>
+      <Stack.Screen name = "LandingScreen" component = {LandingScreen} options = {{headerShown: false}}/>
+      <Stack.Screen name = "DetailedSongScreen" component ={DetailedSongScreen}/>
+      <Stack.Screen name = "PreviewSongScreen"component = {PreviewSongScreen}/>
+    </Stack.Navigator>
+  </NavigationContainer>
 }
 
 const styles = StyleSheet.create({

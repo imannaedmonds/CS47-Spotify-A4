@@ -1,10 +1,29 @@
-import { StyleSheet, View, Image, SafeAreaView, Text } from "react-native";
+import { Image, SafeAreaView, Text, Pressable } from "react-native";
 import { millisToMinutesAndSeconds } from "./index";
+import DetailedSongScreen from "./DetailedSongScreen";
+import PreviewSongScreen from "./PreviewSongScreen";
+import 'react-native-gesture-handler';
 
-export default function SongItem( {cover, title, artist, albumname, duration, index} ) {
+export default function SongItem( {preview_url, external_url, cover, title, artist, albumname, duration, index} ) {
     const songlength = millisToMinutesAndSeconds(duration);  
-    console.log(cover)
+
     return (
+
+        <Pressable style ={styles.itemContainer} onPress ={() => {
+            navigation.navigate("DetailedSongScreen",{
+                external_url: item.external_url.spotify
+            });
+        }}>
+
+        <Pressable onPress = {(e) => {
+            e.stopPropagayion();
+            navigation.navigate("PreviewSongScreen",{
+                preview_url: item.preview_url
+            });
+        }}>
+            <Ionicons name = "play-circle" size ={25} color = "1DB954" />
+            </Pressable>
+
         <SafeAreaView style = {styles.item}>
             <Text style = {styles.index}>{index}</Text>
             <Image style = {styles.image} source = {{uri: cover}}/>
@@ -17,7 +36,8 @@ export default function SongItem( {cover, title, artist, albumname, duration, in
                 <Text style = {{color: 'gray', alignItems: 'flex-end'}}> {songlength}</Text>
             </SafeAreaView>
         </SafeAreaView>
-    )
+        </Pressable>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -67,4 +87,12 @@ const styles = StyleSheet.create({
         width: "7%",
         flexDirection: 'row',
     },
+
+    itemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: 19,
+        flex: 1,
+    },
+
   });
